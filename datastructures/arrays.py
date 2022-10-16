@@ -52,7 +52,37 @@ class DynamicArray:
         return self._arr[self._size]
 
     def find_item(self, item):
-        for i in range(len(self._arr)):
+        for i in range(self._len()):
             if self._arr[i] == item:
                 return i
         return -1
+
+    def delete_at_index(self, index):
+        if index < 0 or index >= self._size:
+            raise IndexError("index is out of bounds")
+        self.shift_left_at_index(index)
+        self._size -= 1
+        if self._size == self._capacity / 2:
+            self._shrink()
+
+    def delete_value(self, value):
+        for i in range(self._len()):
+            if self._arr[i] == value:
+                self.shift_left_at_index(i)
+                self._size -= 1
+                if self._size == self._capacity / 2:
+                    self._shrink()
+
+    def shift_left_at_index(self, index):
+        for i in range(index, self._size):
+            self._arr[i] = self._arr[i + 1]
+
+    def shift_right_at_index(self, index):
+         for i in range(self._size, index, -1):
+            self._arr[i] = self._arr[i - 1]
+
+    def insert_at_index(self, index, item):
+        if self._size == self._capacity:
+            self._expand_array()
+        self.shift_right_at_index(index)
+        self._arr[index] = item
